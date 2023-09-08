@@ -16,7 +16,11 @@ if (condition) {                                                            \
     return false;                                                           \
 }
 
-#define MS_MAX_SIMULATE 100;
+#define MS_MAX_SIMULATE 250;
+
+const char FONT[] = "consola.ttf";
+const SDL_Color BLACK = { 0, 0, 0, 0 };
+
 using namespace std;
 using namespace app;
 using namespace util;
@@ -66,6 +70,12 @@ bool Application::initialize(const string& title, const Settings& settings) {
     int imgInitResult = IMG_Init(IMG_INIT_PNG);
     CHECK_SDL_RESULT(imgInitResult < 0, "IMG_Init");
 
+    int ttfInitResult = TTF_Init();
+    CHECK_SDL_RESULT(ttfInitResult < 0, "TTF_Init");
+
+    ttf_font = TTF_OpenFont(FONT, 20);
+    CHECK_SDL_RESULT(ttf_font == nullptr, "SDL_CreateFont");
+
     _window = SDL_CreateWindow(
             title.c_str(),
             SDL_WINDOWPOS_UNDEFINED,
@@ -97,13 +107,29 @@ bool Application::initialize(const string& title, const Settings& settings) {
     srand( static_cast<unsigned int>( time(nullptr) ) );
     initializeObjects();
 
-
     SDL_Point cameraPosition;
     cameraPosition.x -= settings.displayWidth / 2;
     cameraPosition.y -= settings.displayHeight / 2;
     _camera->setPosition(cameraPosition);
 
     return true;
+}
+
+void Application::print_ttf(SDL_Surface* surface, std::string* message, int size, SDL_Color color, SDL_Rect* rect, Centered centered)
+{
+    SDL_Surface* text_surface = TTF_RenderUTF8_Blended(ttf_font, message->c_str(), color);
+    if (centered == x_centered)  {
+        rect->x = (surface->w - text_surface->w) / 2;
+    }
+    else if (centered == y_centered) {
+        rect->y = (surface->h - text_surface->h) / 2;
+    }
+    else if (centered == xy_centered) {
+        rect->x = (surface->w - text_surface->w) / 2;
+        rect->y = (surface->h - text_surface->h) / 2;
+    }
+    SDL_BlitSurface(text_surface, NULL, surface, rect);
+    SDL_FreeSurface(text_surface);
 }
 
 void Application::update() {
@@ -130,12 +156,10 @@ void Application::update() {
             if (_field->getObject(p2) == object) {
                 _field->setObject(p2, nullptr);
             }
-
             _objects.erase(_objects.begin() + i);
             --i;
         }
     }
-
 
     updateState();
 
@@ -195,7 +219,7 @@ void Application::handleEvent(const SDL_Event& event) {
 
 void Application::cleanup() {
     _resourceManager.cleanup();
-
+    TTF_CloseFont(ttf_font);
     SDL_DestroyWindow(_window);
     SDL_Quit();
     IMG_Quit();
@@ -228,7 +252,7 @@ void Application::handleMouseMotion(const SDL_Event& event) noexcept {
     SDL_Point mouseGlobalPoint = _camera->getPosition();
     mouseGlobalPoint.x += event.motion.x;
     mouseGlobalPoint.y += event.motion.y;
-    //_currentPos = _field->getRowCol( convertToCoordinate(mouseGlobalPoint) );
+   //
 }
 
 void Application::handleMouseButton(const SDL_Event& event) noexcept {

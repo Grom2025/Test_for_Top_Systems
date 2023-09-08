@@ -24,8 +24,8 @@ namespace object {
         void                        correctBorder() noexcept;
         void                        correctVisibleRect() noexcept;
 
-        SDL_Rect                    _border;        // ограничение области просмотра
-        SDL_Rect                    _visibleRect;   // видимая часть
+        SDL_Rect                    _border;
+        SDL_Rect                    _visibleRect;
     };
 
     using CameraPtr                 = std::shared_ptr<Camera>;

@@ -69,7 +69,7 @@ void IDynamicObject::setMoveFlag(bool moveFlag) {
 
 void IDynamicObject::startMotion(Direction direction) {
     setDirection(direction);
-//    _endPosition = nextPosition(_beginPosition, direction);
+    _endPosition = nextPosition(_beginPosition, direction);
     _moveFlag = true;
 }
 

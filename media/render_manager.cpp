@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "render_manager.h"
+#include "../app/app.h"
 
 using namespace std;
 using namespace media;
@@ -72,6 +73,8 @@ void RenderManager::renderAll(const object::CameraPtr camera) {
         renderData.point.y -= cameraPoint.y;
         //renderData.sprite->copyTo(_renderer, renderData.point);
     }
+
+
 
     SDL_RenderPresent(_renderer);
 }

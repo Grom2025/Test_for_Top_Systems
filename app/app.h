@@ -19,7 +19,10 @@
 #include "../media/render_manager.h"
 #include "../media/resource_manager.h"
 
+
 namespace app {
+
+    enum Centered { not_centered, x_centered, y_centered, xy_centered };
 
     enum class LevelState {
         PLAYING,
@@ -40,6 +43,7 @@ namespace app {
         void                        render();
         void                        handleEvent(const SDL_Event& event);
         void                        cleanup();
+        void                        print_ttf(SDL_Surface* surface, std::string* message, int size, SDL_Color color, SDL_Rect* rect, Centered centered);
 
     private:
         void                        renderInCenter(const media::SpritePtr sprite);
@@ -70,16 +74,11 @@ namespace app {
         object::Position            _currentPos;
         object::Position            _finishPos;
 
+        TTF_Font*                   ttf_font;
+
         static const object::TileDescription    TILE_DESCRIPTION;
         static const SDL_Color                  BACKGROUND_COLOR;
         static const uint32_t                   FIELD_SIZE;
-        static const int                        CANNON_DELAY_MS_MIN;
-        static const int                        CANNON_DELAY_MS_MAX;
-        static const float                      PLAYER_SPEED;
-        static const float                      ENEMY_SPEED;
-        static const float                      FIREBALL_SPEED;
-
-
     };
 
     void                            loop(Application& application);

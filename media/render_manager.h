@@ -30,10 +30,11 @@ namespace media {
         void                        addToQueue(const RenderData& renderData);
         void                        renderAll(const object::CameraPtr camera);
         void                        clearQueue();
-
-    private:
         SDL_Renderer*               _renderer;
         SDL_Color                   _color;
+
+    private:
+
         std::vector<RenderData>     _queue;
     };
 
